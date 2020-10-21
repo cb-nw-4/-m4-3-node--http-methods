@@ -48,6 +48,8 @@ Use `yarn dev:frontend` to start the frontend dev environment.
 
 Use `yarn dev:backend` to start the backend dev environment.
 
+![dual terminal](__lecture/assets/dual_terminal.gif)
+
 ---
 
 ## Workshop

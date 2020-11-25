@@ -74,6 +74,11 @@ express()
         status: "error",
         error: "unavailable",
       });
+    } else if (checkSize == "undefined") {
+      res.json({
+        status: "error",
+        error: "unavailable",
+      });
     } else if (!customerExists) {
       res.json({
         status: "success",

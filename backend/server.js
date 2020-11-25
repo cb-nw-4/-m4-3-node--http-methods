@@ -3,6 +3,8 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const { stock, customers } = require("./data/inventory");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -29,6 +31,30 @@ express()
       status: 404,
       message: "This is obviously not what you are looking for.",
     });
+  })
+
+  .post("/order", (req, res) => {
+    const body = req.body;
+    console.log(body);
+
+    let customerExists = customers.find((el) => {
+      return (
+        el.givenName === body.givenName ||
+        el.surname === body.surname ||
+        el.email === body.email ||
+        el.address === body.address
+      );
+    });
+
+    if (customerExists) {
+      res.json({
+        'repeat-customer': 'Customer has already purchased an item'
+      });
+    } else {
+      res.json({
+        'success': 'order placed!'
+      })
+    }
   })
 
   // Node spins up our server and sets it to listen on port 8000.

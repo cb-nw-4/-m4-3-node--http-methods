@@ -35,7 +35,6 @@ express()
 
   .post("/order", (req, res) => {
     const body = req.body;
-    console.log(body);
 
     let customerExists = customers.find((el) => {
       return (
@@ -46,14 +45,39 @@ express()
       );
     });
 
+    let emailValidated = body.email.includes("@");
+
+    let countryValidated = body.country.includes("Canada");
+
+    let checkStock = stock.shirt.filter(el => )
+
     if (customerExists) {
       res.json({
-        'repeat-customer': 'Customer has already purchased an item'
+        status: "error",
+        error: "repeat-customer",
       });
-    } else {
+    } else if (!emailValidated) {
       res.json({
-        'success': 'order placed!'
-      })
+        status: "error",
+        error: "missing-data",
+      });
+    } else if (!countryValidated) {
+      res.json({
+        status: "error",
+        error: "undeliverable",
+      });
+    } else if (!customerExists) {
+      res.json({
+        status: "success",
+      });
+    } else if (emailValidated) {
+      res.json({
+        status: "success",
+      });
+    } else if (countryValidated) {
+      res.json({
+        status: "success",
+      });
     }
   })
 

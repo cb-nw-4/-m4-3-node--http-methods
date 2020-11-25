@@ -35,6 +35,7 @@ express()
 
   .post("/order", (req, res) => {
     const body = req.body;
+    console.log(body);
 
     let customerExists = customers.find((el) => {
       return (
@@ -49,7 +50,9 @@ express()
 
     let countryValidated = body.country.includes("Canada");
 
-    let checkStock = stock.shirt.filter(el => )
+    let checkSize = body.size;
+
+    let checkStock = stock.shirt[checkSize];
 
     if (customerExists) {
       res.json({
@@ -66,6 +69,11 @@ express()
         status: "error",
         error: "undeliverable",
       });
+    } else if (checkStock == "0") {
+      res.json({
+        status: "error",
+        error: "unavailable",
+      });
     } else if (!customerExists) {
       res.json({
         status: "success",
@@ -75,6 +83,10 @@ express()
         status: "success",
       });
     } else if (countryValidated) {
+      res.json({
+        status: "success",
+      });
+    } else if (checkStock != "0") {
       res.json({
         status: "success",
       });

@@ -41,7 +41,7 @@ const App = () => {
       .then((json) => {
         const { status, error } = json;
         if (status === "success") {
-          window.location.href = "/order-confirmed";
+          // window.location.href = "/order-confirmed";
           setSubStatus('confirmed');
         } else if (error) {
           setSubStatus('error');
@@ -65,7 +65,12 @@ const App = () => {
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg
+          givenName={formData.givenName}
+          order={formData.order}
+          province={formData.province}  
+        />
+
       )}
     </Wrapper>
   );

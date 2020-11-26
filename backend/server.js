@@ -22,8 +22,8 @@ express()
   // add new endpoints here 👇
 
   .post('/order', (req, res) => {
+    console.log(req.body);
     const { order,
-            tshirt,
             size,
             givenName,
             surname,
@@ -64,7 +64,7 @@ express()
     // Check for valid email format (simple regex stolen from the Internet)
     const regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
-    if (!regExp.test(email)) {
+    if (!error && !regExp.test(email)) {
       error = true;
       errorMsg = 'missing-data';
     }
@@ -74,12 +74,23 @@ express()
       error = true;
       errorMsg = 'undeliverable';
     }
+
+    // Check for stock
+    if (!error) {
+      if (size === 'undefined' && stock[order] < 1) {
+        error = true;
+        errorMsg = 'unavailable';
+      }
+
+      if (size !== 'undefined' && stock[order][size] < 1) {
+        error = true;
+        errorMsg = 'unavailable';
+      }
+    }
   
     if (!error) {
-      console.log('success');
       res.json({ status: 'success' });
     } else {
-      console.log('error: ' + errorMsg);
       res.json({ status: 'error', error: errorMsg});
     }
   })

@@ -9,7 +9,7 @@ const Button = ({ handleClick, disabled, subStatus }) => (
         <div></div>
       </Loading>
     )}
-    {subStatus === "idle" && <span class="button-label">Submit</span>}
+    {subStatus === "idle" && <span className="button-label">Submit</span>}
   </Wrapper>
 );
 

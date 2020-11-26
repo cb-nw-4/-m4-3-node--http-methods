@@ -3,6 +3,8 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const { stock, customers } = require("./data/inventory");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -18,6 +20,54 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
+  .post('/order', (req, res) =>{
+    console.log(req.body);
+    const repeatCustomer = customers.find((customer)=>(
+      req.body.givenName === customer.givenName &&
+      req.body.surname === customer.surname &&
+      req.body.email === customer.email &&
+      req.body.address === customer.address));
+
+    let isCompletedData = /(.+)@(.+){2,}\.(.+){2,}/.test(req.body.email);    
+    if (req.body.order === "shirt" && req.body.size === undefined)
+      isCompletedData = false;    
+
+    const isDeliverable = req.body.country.toLowerCase() === "canada";
+
+    let isAvailable = stock[req.body.order] !== "0";
+    if (req.body.order === "tshirt" && stock.shirt[req.body.size] === "0")
+      isAvailable= false;
+
+    if (repeatCustomer){
+      res.status(404).json({
+        status: "error",
+        error: 'repeat-customer',
+      });  
+    }
+    else if(!isCompletedData) {
+      res.status(404).json({
+        status: "error",
+        error: 'missing-data',
+      });  
+    }
+    else if(!isDeliverable) {
+      res.status(404).json({
+        status: "error",
+        error: 'undeliverable',
+      });  
+    }
+    else if(!isAvailable) {
+      res.status(404).json({
+        status: "error",
+        error: 'unavailable',
+      });  
+    }
+    else {
+        res.status(200).json({
+          status: "success",         
+        });  
+      }    
+  })
 
   // add new endpoints here ☝️
   // ---------------------------------

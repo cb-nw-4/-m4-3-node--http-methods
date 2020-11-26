@@ -21,11 +21,11 @@ const App = () => {
 
   const handleChange = (value, name) => {
     setFormData({ ...formData, [name]: value });
-    setErrMessage("");
+    setErrMessage("");    
   };
 
-  const handleClick = () => {
-    setSubStatus("pending");
+  const handleClick = (ev) => {
+    setSubStatus("pending");   
 
     fetch("/order", {
       method: "POST",
@@ -37,15 +37,17 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((json) => {
-        const { status, error } = json;
+        const { status, error } = json;      
         if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+        //  window.location.href = "/order-confirmed";
+          setSubStatus("confirmed");        
         } else if (error) {
-          setSubStatus = "error";
-          setErrMessage(errorMessages[error]);
+          setSubStatus("error");
+          setErrMessage(errorMessages[error]);        
         }
       });
+      ev.preventDefault();
+     
   };
 
   return (
@@ -56,14 +58,14 @@ const App = () => {
           <Form
             formData={formData}
             handleChange={handleChange}
-            handleClick={handleClick}
+            handleClick={(ev)=>handleClick(ev)}
             disabled={disabled}
             subStatus={subStatus}
           />
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg formData={formData}/>
       )}
     </Wrapper>
   );

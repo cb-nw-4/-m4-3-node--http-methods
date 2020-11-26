@@ -4,13 +4,19 @@
 const express = require("express");
 const morgan = require("morgan");
 
+//Data
+const { customers } = require('./data/inventory');
+// console.log(customers);
+const { stock } = require('./data/inventory');
+// console.log(stock);
+
 express()
   // Below are methods that are included in express(). We chain them for convenience.
   // --------------------------------------------------------------------------------
 
   // This will give us will log more info to the console. see https://www.npmjs.com/package/morgan
   .use(morgan("tiny"))
-  .use(bodyParser.json())
+  .use(express.json())
 
   // Any requests for static files will go into the public folder
   .use(express.static("public"))
@@ -18,7 +24,28 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
+  .post('/testing', (req, res) => {
+    const INCOMING_ACCOUNT = req.body;
+    //Check if the givenName is already used
+    let sameData = false;
+    customers.forEach((account) => {
+      if(
+          account.givenName.toLowerCase() === INCOMING_ACCOUNT.givenName.toLowerCase() ||
+          account.email.toLowerCase() === INCOMING_ACCOUNT.email.toLowerCase() ||
+          account.address.toLowerCase().split(' ').join('') === INCOMING_ACCOUNT.address.toLowerCase().split(' ').join('')
+          ) {
+          sameData = true;
+      }
+    });
+    //If sameData = false, push the INCOMING_ACCOUNT
+    if(sameData === false) {
+      customers.push(INCOMING_ACCOUNT);
+    }
+    // console.log(sameData, 'test');
 
+    //Send to the ...
+    res.status(200).send({ customers: customers })
+  })
   // add new endpoints here ☝️
   // ---------------------------------
   // Nothing to modify below this line

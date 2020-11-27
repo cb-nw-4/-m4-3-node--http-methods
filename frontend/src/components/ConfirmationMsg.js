@@ -1,20 +1,37 @@
 import React from "react";
 import styled from "styled-components";
 
-const ConfirmationMsg = () => <Wrapper>Order Confirmed!</Wrapper>;
+const ConfirmationMsg = (props) => {
+  return (
+    <Wrapper>
+      <Smiley>😃</Smiley>
+      <Thanks>Thanks for ordering {props.givenName}</Thanks>
+      <OrderDetail>
+        Your {props.order} order shipping to {props.province} has been confirmed
+      </OrderDetail>
+    </Wrapper>
+  );
+}
 
-const Wrapper = styled.p`
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  font-weight: 700;
+const Wrapper = styled.div`
+  text-align: center;
   z-index: 4;
+`;
+
+const Smiley = styled.p`
+  text-align: center;
+  font-size: 70px;
+`;
+
+const Thanks = styled.p`
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+`;
+
+const OrderDetail = styled.p`
+  text-align: center;
+  font-size: 20px;
 `;
 
 export default ConfirmationMsg;

@@ -9,8 +9,8 @@ const { stock, customers } = require("./data/inventory");
 const handleFormSubmission = (req, res) => {
   console.log(req.body);
   const country = req.body.country.toLowerCase();
-  const givenName = req.body.givenName;
-  const surname = req.body.surname;
+  const givenName = req.body.givenName.toLowerCase();
+  const surname = req.body.surname.toLowerCase();
   const email = req.body.email;
   const address = req.body.address;
   const order = req.body.order;
@@ -21,7 +21,7 @@ const handleFormSubmission = (req, res) => {
   let addressMatch;
 
   customers.forEach((customer) => {
-    if (givenName === customer.givenName && surname === customer.surname) {
+    if (givenName === customer.givenName.toLowerCase() && surname === customer.surname.toLowerCase()) {
       nameMatch = true;
     }
   })
@@ -47,7 +47,7 @@ const handleFormSubmission = (req, res) => {
   else if (email.length < 5 || (!email.includes("@"))) {
     res.json({"status": "error", "error": "missing-data"});
   } 
-  else if (order === "tshirt" && stock.shirt[size] < 1) {
+  else if ((order === "tshirt" && stock.shirt[size] < 1) || (order === "bottle" && stock.bottle < 1) || (order === "socks" && stock.socks < 1)) {
     res.json({"status": "error", "error": "unavailable"});
   } 
   else {

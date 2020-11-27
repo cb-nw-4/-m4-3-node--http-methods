@@ -10,7 +10,7 @@ export const sizeOptions = [
   { value: "small", label: "Small" },
   { value: "medium", label: "Medium" },
   { value: "large", label: "Large" },
-  { value: "extralarge", label: "Extra-large" },
+  { value: "xlarge", label: "Extra-large" },
 ];
 
 export const imgFiles = {

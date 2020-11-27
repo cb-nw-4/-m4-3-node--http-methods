@@ -30,6 +30,16 @@ const customers = [
     postcode: "M5C 2E4",
     country: "Canada",
   },
+  {
+    givenName: "Billy",
+    surname: "Joel",
+    email: "ABC@netscape.com",
+    address: "111 Street st.",
+    city: "Hartford",
+    province: "British Columbia",
+    postcode: "111 KKK",
+    country: "Canada",
+  }
 ];
 
 module.exports = { stock, customers };

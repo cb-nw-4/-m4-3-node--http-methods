@@ -22,7 +22,6 @@ express()
   // add new endpoints here 👇
 
   .post('/order', (req, res) => {
-    console.log(req.body);
     const { order,
             size,
             givenName,

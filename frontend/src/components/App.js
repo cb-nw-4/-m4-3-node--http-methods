@@ -40,9 +40,9 @@ const App = () => {
         const { status, error } = json;
         if (status === "success") {
           window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+          setSubStatus("confirmed");
         } else if (error) {
-          setSubStatus = "error";
+          setSubStatus("error");
           setErrMessage(errorMessages[error]);
         }
       });

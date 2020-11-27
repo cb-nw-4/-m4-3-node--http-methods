@@ -38,4 +38,5 @@ export const errorMessages = {
     "Exiting user. Not allowed to place another order at the moment.",
   undeliverable: "Outside of delivery zone. :(",
   "missing-data": "Oops! Looks like we're missing some information.",
+  email: "Your email is not formatted correctly."
 };

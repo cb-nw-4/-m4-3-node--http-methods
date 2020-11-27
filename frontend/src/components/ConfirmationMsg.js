@@ -1,7 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const ConfirmationMsg = () => <Wrapper>Order Confirmed!</Wrapper>;
+const ConfirmationMsg = ({formData}) => 
+  <Wrapper>
+    <Thanks>
+      {`Thank you for ordering, ${formData.givenName}!`} 
+    </Thanks>
+    <OrderConfirmation>
+      {`Your order of ${formData.order} will be sent to your home in ${formData.province}, Canada. Thank you for participating!`}
+    </OrderConfirmation>
+  </Wrapper>;
 
 const Wrapper = styled.p`
   position: fixed;
@@ -10,11 +18,21 @@ const Wrapper = styled.p`
   height: 100vh;
   width: 100vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 32px;
   font-weight: 700;
   z-index: 4;
 `;
+
+const Thanks = styled.p`
+  font-size: 32px;
+  padding: 20px;
+`
+
+const OrderConfirmation = styled.p` 
+  font-size: 24px;
+  padding: 20px;
+`
 
 export default ConfirmationMsg;

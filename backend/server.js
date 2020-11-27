@@ -8,7 +8,7 @@ const { stock, customers } = require("./data/inventory");
 
 const handleFormSubmission = (req, res) => {
   console.log(req.body);
-  const country = req.body.country;
+  const country = req.body.country.toLowerCase();
   const givenName = req.body.givenName;
   const surname = req.body.surname;
   const email = req.body.email;
@@ -16,15 +16,41 @@ const handleFormSubmission = (req, res) => {
   const order = req.body.order;
   const size = req.body.size;
 
-  if (country !== "Canada") {
+  let nameMatch;
+  let emailMatch;
+  let addressMatch;
+
+  customers.forEach((customer) => {
+    if (givenName === customer.givenName && surname === customer.surname) {
+      nameMatch = true;
+    }
+  })
+
+  customers.forEach((customer) => {
+    if (email === customer.email) {
+      emailMatch = true;
+    }
+  })
+
+  customers.forEach((customer) => {
+    if (address === customer.address) {
+      addressMatch = true;
+    }
+  })
+
+  if (country !== "canada") {
     res.json({"status": "error", "error": "undeliverable"});
-  } else if ((givenName === customers.givenName && surname === customers.surname) || email === customers.email || address === customers.address) {
+  } 
+  else if (nameMatch || emailMatch || addressMatch) {
     res.json({"status": "error", "error": "repeat-customer"});
-  } else if (email.length < 5 || (!email.includes("@"))) {
+  } 
+  else if (email.length < 5 || (!email.includes("@"))) {
     res.json({"status": "error", "error": "missing-data"});
-  } else if (order === "tshirt" && size === "medium") {
+  } 
+  else if (order === "tshirt" && stock.shirt[size] < 1) {
     res.json({"status": "error", "error": "unavailable"});
-  } else {
+  } 
+  else {
     res.json({"status": "success"});
   }
 }

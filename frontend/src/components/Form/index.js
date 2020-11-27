@@ -4,9 +4,9 @@ import Select from "./Select";
 import Input from "./Input";
 import Button from "./Button";
 
-import { itemOptions, sizeOptions } from "../../settings";
+import { errorMessages, itemOptions, sizeOptions } from "../../settings";
 
-const Form = ({ formData, handleChange, handleClick, disabled, subStatus }) => (
+const Form = ({ formData, handleChange, handleClick, disabled, subStatus, errMessage }) => (
   <Wrapper>
     <SelectWrapper>
       <Select
@@ -47,6 +47,7 @@ const Form = ({ formData, handleChange, handleClick, disabled, subStatus }) => (
         name="email"
         type="text"
         placeholder="Email"
+        error={errMessage === errorMessages.email}
         handleChange={handleChange}
       />
       <h2>Shipping Address</h2>

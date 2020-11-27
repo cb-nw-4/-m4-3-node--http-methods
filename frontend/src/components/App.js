@@ -24,28 +24,34 @@ const App = () => {
     setErrMessage("");
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.preventDefault();
     setSubStatus("pending");
 
-    fetch("/order", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        const { status, error } = json;
-        if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
-        } else if (error) {
-          setSubStatus = "error";
-          setErrMessage(errorMessages[error]);
-        }
-      });
+    if (!formData.email.includes("@")) {
+      setErrMessage(errorMessages.email);
+      setSubStatus("error");
+      setDisabled(true)
+    } else {
+      fetch("/order", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          const { status, error } = json;
+          if (status === "success") {
+            setSubStatus("confirmed");
+          } else if (error) {
+            setSubStatus("error");
+            setErrMessage(errorMessages[error]);
+          }
+        });
+    }
   };
 
   return (
@@ -59,11 +65,16 @@ const App = () => {
             handleClick={handleClick}
             disabled={disabled}
             subStatus={subStatus}
+            errMessage={errMessage}
           />
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg
+          name={formData.givenName}
+          product={formData.order}
+          province={formData.province}
+        />
       )}
     </Wrapper>
   );

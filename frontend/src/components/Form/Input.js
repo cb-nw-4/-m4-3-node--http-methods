@@ -1,9 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const Input = ({ name, type, placeholder, handleChange }) => {
+const Input = ({ name, type, placeholder, handleChange, error }) => {
   return (
-    <Wrapper>
+    <Wrapper error={error}>
       <label htmlFor={name}>{placeholder}</label>
       <input
         type={type}
@@ -34,7 +34,14 @@ const Wrapper = styled.div`
     height: 36px;
     padding: 8px 12px 10px 12px;
     width: 100%;
-
+    ${(props) => {
+      return (
+        props.error &&
+        css`
+          border: 1px solid red;
+        `
+      );
+    }}
     &::placeholder {
       color: #999;
     }

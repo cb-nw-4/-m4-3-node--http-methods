@@ -25,6 +25,7 @@ const App = () => {
   };
 
   const handleClick = (ev) => {
+    ev.preventDefault();
     setSubStatus("pending");   
 
     fetch("/order", {
@@ -38,16 +39,14 @@ const App = () => {
       .then((res) => res.json())
       .then((json) => {
         const { status, error } = json;      
-        if (status === "success") {
-        //  window.location.href = "/order-confirmed";
+        if (status === "success") {        
+          window.history.replaceState({}, "", "/order-confirmed");
           setSubStatus("confirmed");        
         } else if (error) {
           setSubStatus("error");
           setErrMessage(errorMessages[error]);        
         }
-      });
-      ev.preventDefault();
-     
+      });  
   };
 
   return (

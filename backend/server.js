@@ -23,19 +23,20 @@ express()
   .post('/order', (req, res) =>{
     console.log(req.body);
     const repeatCustomer = customers.find((customer)=>(
-      req.body.givenName === customer.givenName &&
-      req.body.surname === customer.surname &&
-      req.body.email === customer.email &&
-      req.body.address === customer.address));
-
+      (req.body.givenName.toLowerCase() === customer.givenName.toLowerCase() &&
+      req.body.surname.toLowerCase() === customer.surname.toLowerCase()) ||
+      req.body.email.toLowerCase() === customer.email.toLowerCase() ||
+      req.body.address.toLowerCase() === customer.address.toLowerCase()));
+    
+    const order = req.body.order === "tshirt" ? "shirt" : req.body.order;
     let isCompletedData = /(.+)@(.+){2,}\.(.+){2,}/.test(req.body.email);    
-    if (req.body.order === "shirt" && req.body.size === undefined)
-      isCompletedData = false;    
-
+    if (order === "shirt" && (req.body.size === undefined || req.body.size === "undefined"))
+      isCompletedData = false;      
+     
     const isDeliverable = req.body.country.toLowerCase() === "canada";
 
-    let isAvailable = stock[req.body.order] !== "0";
-    if (req.body.order === "tshirt" && stock.shirt[req.body.size] === "0")
+    let isAvailable = stock[order] !== "0";
+    if (order === "shirt" && stock.shirt[req.body.size] === "0")
       isAvailable= false;
 
     if (repeatCustomer){

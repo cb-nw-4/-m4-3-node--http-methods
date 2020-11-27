@@ -6,13 +6,12 @@ import ConfirmationMsg from "./ConfirmationMsg";
 import ErrorMsg from "./ErrorMsg";
 
 import { errorMessages, initialState } from "../settings";
-
 const App = () => {
   const [formData, setFormData] = useState(initialState);
   const [disabled, setDisabled] = useState(true);
   const [subStatus, setSubStatus] = useState("idle");
   const [errMessage, setErrMessage] = useState("");
-
+  // console.log(formData);
   useEffect(() => {
     Object.values(formData).includes("") || formData.order === "undefined"
       ? setDisabled(true)
@@ -24,7 +23,8 @@ const App = () => {
     setErrMessage("");
   };
 
-  const handleClick = () => {
+  const handleClick = (event) => {
+    event.preventDefault();
     setSubStatus("pending");
 
     fetch("/order", {
@@ -39,10 +39,10 @@ const App = () => {
       .then((json) => {
         const { status, error } = json;
         if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+          // window.location.href = "/order-confirmed";
+          setSubStatus("confirmed");
         } else if (error) {
-          setSubStatus = "error";
+          setSubStatus("error");
           setErrMessage(errorMessages[error]);
         }
       });
@@ -63,7 +63,7 @@ const App = () => {
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg formData={formData}/>
       )}
     </Wrapper>
   );

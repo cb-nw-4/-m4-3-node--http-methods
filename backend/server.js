@@ -5,10 +5,11 @@ const express = require("express");
 const morgan = require("morgan");
 
 //Data
-const { customers } = require('./data/inventory');
-// console.log(customers);
-const { stock } = require('./data/inventory');
-// console.log(stock);
+  const { customers, stock } = require('./data/inventory');
+  // console.log(customers);
+  // const { stock } = require('./data/inventory');
+  // console.log(stock);
+
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -24,27 +25,88 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
-  .post('/testing', (req, res) => {
+  .post('/order', (req, res) => {
     const INCOMING_ACCOUNT = req.body;
-    //Check if the givenName is already used
+    console.log(req.body);
+
+    let isAnEmail = false;
     let sameData = false;
+    let shipTo = false;
+
+    //Check if the email is an email AND if the country is Canada
+    if(INCOMING_ACCOUNT.email.includes('@')){
+      isAnEmail = true;
+    }  
+    if (INCOMING_ACCOUNT.country.toLowerCase() === 'canada') {
+      shipTo = true;
+    }
+    //Check if the givenName is already used
     customers.forEach((account) => {
       if(
           account.givenName.toLowerCase() === INCOMING_ACCOUNT.givenName.toLowerCase() ||
           account.email.toLowerCase() === INCOMING_ACCOUNT.email.toLowerCase() ||
-          account.address.toLowerCase().split(' ').join('') === INCOMING_ACCOUNT.address.toLowerCase().split(' ').join('')
+          account.address.toLowerCase().split(' ').join('') === INCOMING_ACCOUNT.address.toLowerCase().split(' ').join('') //||
+          // account.postcode.toLocaleLowerCase().split(' ').join('') === INCOMING_ACCOUNT.postalcode.toLocaleLowerCase().split(' ').join('') //Getting an error after the second try with another postal code
           ) {
           sameData = true;
       }
     });
+
     //If sameData = false, push the INCOMING_ACCOUNT
-    if(sameData === false) {
+    if(isAnEmail === true && shipTo === true && sameData === false) {
       customers.push(INCOMING_ACCOUNT);
     }
-    // console.log(sameData, 'test');
 
-    //Send to the ...
-    res.status(200).send({ customers: customers })
+    //Check if the item is in stock or not
+    let isInStock = false;
+    const ITEM_NAME = INCOMING_ACCOUNT.order;
+    const SHIRT_SIZE = INCOMING_ACCOUNT.size;
+    // console.log(ITEM_NAME, '1');
+    // console.log(stock.bottle, '2');
+    // console.log(stock[ITEM_NAME], '3');
+    // console.log(stock[ITEM_NAME][SHIRT_SIZE]);
+
+    if(ITEM_NAME === 'shirt' && parseInt(stock[ITEM_NAME][SHIRT_SIZE]) > 0){
+      isInStock = true;
+    } else if(parseInt(stock[ITEM_NAME]) > 0){ // is the number a string? Do I have to turn it into a num?
+      isInStock = true;
+    };
+    // console.log(isInStock, 'inStock' );
+
+    //Testing to send an error
+    let currentStatus = 200;
+    let errorId;
+      //Test if we have an empty value
+        let objectValues = Object.values(INCOMING_ACCOUNT);
+        let isValueEmpty = false;
+        // console.log(objectValues, 'values');
+        objectValues.forEach((object) => {
+          if(object === '') {
+            isValueEmpty = true;
+          }
+        })
+        // console.log(isValueEmpty, 'check')
+
+    if(isValueEmpty === true){
+      currentStatus = "error";
+      errorId = "missing-data";
+    } else if(isAnEmail === false){
+      currentStatus = "error";
+      errorId = "Not an email";
+    } else if (shipTo === false) {
+      currentStatus = "error";
+      errorId = "undeliverable";
+    } else if (isInStock === false) {
+      currentStatus = "error";
+      errorId = "unavailable";
+    } else if (sameData === true) {
+      currentStatus = "error";
+      errorId = "repeat-customer";
+    }  else {
+      currentStatus = "success";
+    }
+    //Send to the endpoint
+    res.status(200).send({ status: currentStatus, error: errorId })
   })
   // add new endpoints here ☝️
   // ---------------------------------

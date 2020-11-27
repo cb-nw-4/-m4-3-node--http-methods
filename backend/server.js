@@ -29,9 +29,10 @@ express()
       req.body.address.toLowerCase() === customer.address.toLowerCase()));
     
     const order = req.body.order === "tshirt" ? "shirt" : req.body.order;
-    let isCompletedData = /(.+)@(.+){2,}\.(.+){2,}/.test(req.body.email);    
-    if (order === "shirt" && (req.body.size === undefined || req.body.size === "undefined"))
-      isCompletedData = false;      
+    let isCompletedData = /(.+)@(.+){2,}\.(.+){2,}/.test(req.body.email);  
+    // This is check by the frontend now  
+   /* if (order === "shirt" && (req.body.size === undefined || req.body.size === "undefined"))
+      isCompletedData = false;     */
      
     const isDeliverable = req.body.country.toLowerCase() === "canada";
 

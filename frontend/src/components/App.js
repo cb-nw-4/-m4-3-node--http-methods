@@ -14,7 +14,7 @@ const App = () => {
   const [errMessage, setErrMessage] = useState("");
 
   useEffect(() => {
-    Object.values(formData).includes("") || formData.order === "undefined"
+    Object.values(formData).includes("") || formData.order === "undefined" || (formData.order === "tshirt" && formData.size === "undefined")
       ? setDisabled(true)
       : setDisabled(false);
   }, [formData, setDisabled]);

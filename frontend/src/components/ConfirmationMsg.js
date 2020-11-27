@@ -1,20 +1,27 @@
 import React from "react";
 import styled from "styled-components";
 
-const ConfirmationMsg = () => <Wrapper>Order Confirmed!</Wrapper>;
+const ConfirmationMsg = ({data}) => <Wrapper>
+  
+ <h1>Order Confirmed!</h1> 
+ <h2> Thank you for ordering with us, {data.givenName}! </h2>
+<Info>Your order of {data.order} will be sent to {data.province}, Canada. </Info> 
+ </Wrapper>;
 
-const Wrapper = styled.p`
-  position: fixed;
-  top: 0;
+const Wrapper = styled.div`
+  
+  padding-top: 200px;
   left: 0;
   height: 100vh;
-  width: 100vw;
   display: flex;
-  justify-content: center;
+flex-direction:column;
   align-items: center;
-  font-size: 32px;
-  font-weight: 700;
+  text-align:center;
   z-index: 4;
 `;
+
+const Info = styled.p`
+padding:10px;
+`
 
 export default ConfirmationMsg;

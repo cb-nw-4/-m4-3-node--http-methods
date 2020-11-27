@@ -6,6 +6,7 @@ const ErrorMsg = ({ children }) => <Wrapper>{children}</Wrapper>;
 const Wrapper = styled.div`
   display: flex;
   margin: 0 auto;
+  padding-left:10px;
   border: 1px solid red;
   height: 75px;
   width: 80%;

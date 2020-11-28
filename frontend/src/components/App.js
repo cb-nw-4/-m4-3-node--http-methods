@@ -25,7 +25,7 @@ const App = () => {
   };
 
   const handleClick = (ev) => {
-    ev.preventDefault();
+    ev.preventDefault();  
     setSubStatus("pending");   
 
     fetch("/order", {

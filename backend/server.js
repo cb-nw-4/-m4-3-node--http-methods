@@ -20,8 +20,7 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
-  .post('/order', (req, res) =>{
-    console.log(req.body);
+  .post('/order', (req, res) =>{  
     const repeatCustomer = customers.find((customer)=>(
       (req.body.givenName.toLowerCase() === customer.givenName.toLowerCase() &&
       req.body.surname.toLowerCase() === customer.surname.toLowerCase()) ||

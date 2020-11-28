@@ -3,6 +3,9 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require('body-parser')
+
+const { stock, customers } = require("./data/inventory");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -18,6 +21,62 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
+
+  .post("/order", (req,res) => { 
+    const incomingOrder = req.body; 
+    customers.forEach((element)=> {
+      if(element.givenName===incomingOrder.givenName && 
+        element.surname===incomingOrder.surname || 
+        element.email===incomingOrder.email || 
+        element.address===incomingOrder.address
+        ) {
+        res.json({
+          "status":"error",
+          "error": "repeat-customer"
+        });
+      };
+    }); 
+    let email = incomingOrder.email;
+    if(email.includes("@")===false ) { 
+      res.json({
+        "status":"error",
+        "error":"missing-data"
+      });
+    };
+    if(incomingOrder.country.toLowerCase()!=="canada") {
+      res.json({
+        "status":"error",
+        "error":"undeliverable"
+      });
+    }; 
+    if(incomingOrder.order==="tshirt" && incomingOrder.size==="undefined"){
+      res.json({
+        "status":"error",
+        "error":"missing-data"
+      });
+    };
+
+    if (incomingOrder.order==="tshirt" ) { 
+      let shirtStock = parseInt(stock["shirt"][incomingOrder.size]);
+      if(shirtStock===0) {
+        res.json({
+          "status":"error",
+          "error":"unavailable"
+        });
+      }; 
+    }; 
+
+    let stockOfOrder = stock[incomingOrder["order"]]; 
+    if(parseInt(stockOfOrder)===0) {
+      res.json({
+        "status":"error",
+        "error":"unavailable"
+      });
+    }; 
+    
+    // customers.push(incomingOrder); 
+    res.json({"status": "success"});
+  })
 
   // add new endpoints here ☝️
   // ---------------------------------

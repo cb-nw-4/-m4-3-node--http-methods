@@ -45,7 +45,7 @@ express()
 
     // check if any form data is missing
     let dataIsAvailable = () => {
-      return surname && givenName && email && address && province && country
+      return surname && givenName && email && address && province && country;
     };
 
     // check if item is in stock

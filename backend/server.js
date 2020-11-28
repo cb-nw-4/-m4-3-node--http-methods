@@ -3,6 +3,9 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+
+const { validateCustomers } = require("./validators");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -18,6 +21,8 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
+
+  .post("/order", validateCustomers)
 
   // add new endpoints here ☝️
   // ---------------------------------

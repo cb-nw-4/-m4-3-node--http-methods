@@ -35,8 +35,12 @@ const App = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        res.json();
+        console.log(res);
+      })
       .then((json) => {
+        console.log(json);
         const { status, error } = json;
         if (status === "success") {
           window.location.href = "/order-confirmed";

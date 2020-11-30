@@ -5,7 +5,6 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require('body-parser');
 const { stock, customers } = require('./data/inventory.js');
-
 express()
   // Below are methods that are included in express(). We chain them for convenience.
   // --------------------------------------------------------------------------------
@@ -18,20 +17,14 @@ express()
   .use(express.static("public"))
 
   // Nothing to modify above this line
-  // body: {
-  //   order: 'tshirt',
-  //   size: 'undefined',
-  //   givenName: 'vishal',
-  //   surname: 'handa',
-  //   email: 'blahblah@blah.meh',
-  //   address: '6456 rue dontcomeforme, 666',
-  //   province: 'QC',
-  //   postcode: 'H4A 2E7',
-  //   country: 'Canada',
-  //   city: 'Montréal'
-  // },
   // ---------------------------------
   // add new endpoints here 👇
+  .get("*", (req, res) => {
+    res.status(404).json({
+      status: 404,
+      message: "This is obviously not what you are looking for.",
+    });
+  })
   .post("/order",(req, res)=>{
     console.log(req);
     let confirmCustomer=customers.find(customer=>{
@@ -40,78 +33,49 @@ express()
         customer.email===req.body.email||
         customer.address===req.body.address
       );
-    })
+    });
     let item=req.body.order;
     let size=req.body.size;
 
     let checkStock=()=>{
-      if(req.body.order==="tshirt"){
-        if(stock.item.size>0){
-          return true;
-        }
+      if(item==="tshirt" && parseInt(stock[item][size])>0){
+        return true;
       }
-      else if(stock.item>0){
+      else if(parseInt(stock[item])>0){
         return true;
       }
       else{
-        return;
+        return false;
       }
     };
-// -------------------failure-statements---------------//
+    let finalStatus='success';
+    let finalError='';
+// -------------failure-statements------------//
     if(confirmCustomer){
-      res.json({
-        status: "error",
-        "error": "repeat-customer",
-        message: "Customer has already purchased an item",
-      });
+      finalStatus="error";
+      finalError="repeat-customer";
     }
     else if(!(req.body.email.includes('@'))){
-      res.json({
-        status: "error",
-        "error": "missing-data",
-        message: "Email invalid",
-      });
+      finalStatus="error";
+      finalError="missing-data";
     }
     else if(!(req.body.country==="Canada")){
-      res.json({
-        status: "error",
-        "error": "undeliverable",
-        message: "Customer didn't supply a Canadian shipping address",
-      });
+      finalStatus="error";
+      finalError="undeliverable";
     }
-    else if(!checkStock){
-      res.json({
-        status: "error",
-        "error": "unavailable",
-        message: "Item out of stock",
-      });
+    else if(!checkStock()){
+      finalStatus="error";
+      finalError="unavailable";
     }
-    //--------------success-statements----------//
-    if(!confirmCustomer){
-      res.json({
-        status: "success",
-      });
+    //--------------success-statement----------//
+    else{
+      finalStatus="success";
+      finalError="none";
     }
-    else if(req.body.email.includes('@')){
-      res.json({
-        status: "success",
-      });
-    }
-    else if((req.body.country==="Canada")){
-      res.json({
-        status: "success",
-      });
-    }
-    else if(checkStock){
-      res.json({
-        status: "success",
-      });
-    }
-
-
-    res.status(404).json({
-      status: 404,
-      message: "This is obviously not what you are looking for.",
+    console.log(finalError, finalStatus);
+    res.json({
+      status:finalStatus,
+      error:finalError
     });
   })
 
@@ -120,12 +84,7 @@ express()
   // Nothing to modify below this line
 
   // this is our catch all endpoint.
-  .get("*", (req, res) => {
-    res.status(404).json({
-      status: 404,
-      message: "This is obviously not what you are looking for.",
-    });
-  })
+
 
   // Node spins up our server and sets it to listen on port 8000.
   .listen(8000, () => console.log(`Listening on port 8000`));

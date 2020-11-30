@@ -7,6 +7,7 @@ import ErrorMsg from "./ErrorMsg";
 
 import { errorMessages, initialState } from "../settings";
 
+
 const App = () => {
   const [formData, setFormData] = useState(initialState);
   const [disabled, setDisabled] = useState(true);
@@ -24,9 +25,9 @@ const App = () => {
     setErrMessage("");
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     setSubStatus("pending");
-
+    e.preventDefault();
     fetch("/order", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -36,12 +37,12 @@ const App = () => {
       },
     })
       .then((res) => {
-        res.json();
-        console.log(res);
+        return res.json();
       })
       .then((json) => {
         console.log(json);
         const { status, error } = json;
+        console.log(status, error);
         if (status === "success") {
           window.location.href = "/order-confirmed";
           setSubStatus = "confirmed";
@@ -49,7 +50,9 @@ const App = () => {
           setSubStatus = "error";
           setErrMessage(errorMessages[error]);
         }
-      });
+      })
+      //.catch(err => console.log(err));
+      
   };
 
   return (
@@ -67,7 +70,7 @@ const App = () => {
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg formData={formData}/>
       )}
     </Wrapper>
   );

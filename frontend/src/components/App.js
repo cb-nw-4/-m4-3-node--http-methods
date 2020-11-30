@@ -14,18 +14,19 @@ const App = () => {
   const [errMessage, setErrMessage] = useState("");
 
   useEffect(() => {
-    Object.values(formData).includes("") || formData.order === "undefined"
+    Object.values(formData).includes("") || formData.order === "undefined" || (formData.order === "tshirt" && formData.size === "undefined")
       ? setDisabled(true)
       : setDisabled(false);
   }, [formData, setDisabled]);
 
   const handleChange = (value, name) => {
     setFormData({ ...formData, [name]: value });
-    setErrMessage("");
+    setErrMessage("");    
   };
 
-  const handleClick = () => {
-    setSubStatus("pending");
+  const handleClick = (ev) => {
+    ev.preventDefault();  
+    setSubStatus("pending");   
 
     fetch("/order", {
       method: "POST",
@@ -37,15 +38,15 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((json) => {
-        const { status, error } = json;
-        if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+        const { status, error } = json;      
+        if (status === "success") {        
+          window.history.replaceState({}, "", "/order-confirmed");
+          setSubStatus("confirmed");        
         } else if (error) {
-          setSubStatus = "error";
-          setErrMessage(errorMessages[error]);
+          setSubStatus("error");
+          setErrMessage(errorMessages[error]);        
         }
-      });
+      });  
   };
 
   return (
@@ -56,14 +57,14 @@ const App = () => {
           <Form
             formData={formData}
             handleChange={handleChange}
-            handleClick={handleClick}
+            handleClick={(ev)=>handleClick(ev)}
             disabled={disabled}
             subStatus={subStatus}
           />
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg formData={formData}/>
       )}
     </Wrapper>
   );

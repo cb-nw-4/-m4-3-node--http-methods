@@ -36,18 +36,16 @@ const App = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => {
-        return res.json();
-      })
+      .then((res) =>  res.json())
       .then((json) => {
         console.log(json);
         const { status, error } = json;
         console.log(status, error);
         if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+          //window.location.href = "/order-confirmed";
+          setSubStatus("confirmed");
         } else if (error) {
-          setSubStatus = "error";
+          setSubStatus("error");
           setErrMessage(errorMessages[error]);
         }
       })

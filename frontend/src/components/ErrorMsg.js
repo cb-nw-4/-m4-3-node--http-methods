@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const ErrorMsg = ({ children }) => <Wrapper>{children}</Wrapper>;
+const ErrorMsg = ({ errMessage }) => <Wrapper>{`${errMessage}`}</Wrapper>;
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   align-items: center;
   color: red;
   font-size: 14px;
+  padding: 0 1em;
 `;
 
 export default ErrorMsg;

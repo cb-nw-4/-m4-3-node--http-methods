@@ -24,7 +24,8 @@ const App = () => {
     setErrMessage("");
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.preventDefault();
     setSubStatus("pending");
 
     fetch("/order", {
@@ -38,11 +39,14 @@ const App = () => {
       .then((res) => res.json())
       .then((json) => {
         const { status, error } = json;
+        console.log(error);
+        console.log(errorMessages[error]);
+        console.log(errorMessages);
+
         if (status === "success") {
-          window.location.href = "/order-confirmed";
-          setSubStatus = "confirmed";
+          setSubStatus("confirmed");
         } else if (error) {
-          setSubStatus = "error";
+          setSubStatus("error");
           setErrMessage(errorMessages[error]);
         }
       });
@@ -60,10 +64,10 @@ const App = () => {
             disabled={disabled}
             subStatus={subStatus}
           />
-          {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
+          {subStatus === "error" && <ErrorMsg errMessage={errMessage}/>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg formData={formData}/>
       )}
     </Wrapper>
   );

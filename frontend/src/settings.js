@@ -34,8 +34,7 @@ export const initialState = {
 
 export const errorMessages = {
   unavailable: "Item out of stock. :(",
-  "repeat-customer":
-    "Exiting user. Not allowed to place another order at the moment.",
+  repeatCustomer:"Exiting user. Not allowed to place another order at the moment.",
   undeliverable: "Outside of delivery zone. :(",
-  "missing-data": "Oops! Looks like we're missing some information.",
+  missingData: "Oops! Looks like we're missing some information.",
 };
